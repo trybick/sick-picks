@@ -1,0 +1,24 @@
+{
+  "extends": "airbnb",
+     "env": {
+       "node": true,
+       "es6": true
+  },
+  "globals": {
+     "page": true,
+     "browser": true,
+     "context": true
+   },
+  "rules": {
+    "eol-last": 0,
+    "import/prefer-default-export": 0,
+    "no-await-in-loop": 0,
+    "no-restricted-syntax": ["error", "ForInStatement", "LabeledStatement", "WithStatement"],
+    "no-trailing-spaces": 0,
+    "max-len": 0,
+    "no-unused-vars": 1,
+    "no-multiple-empty-lines": 1,
+    "padded-blocks": 1,
+    "func-names": 0
+  }
+ }
