@@ -7,7 +7,8 @@
   "globals": {
      "page": true,
      "browser": true,
-     "context": true
+     "context": true,
+     "document": true
    },
   "rules": {
     "eol-last": 0,
@@ -19,6 +20,7 @@
     "no-unused-vars": 1,
     "no-multiple-empty-lines": 1,
     "padded-blocks": 1,
-    "func-names": 0
+    "func-names": 0,
+    "no-console": 0
   }
  }
