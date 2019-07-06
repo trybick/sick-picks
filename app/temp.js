@@ -34,3 +34,19 @@ const formattedSickPicks = [
 for (let i in firstObject) {
   formatted[i].data = original[i].textContent;
 }
+
+const newArray = [
+  {
+    show: i,
+    data: [
+      {
+        text: textContents[t],
+        link: hyperlinks[l],
+      },
+      {
+        text: 'Wes 1:  Good Quality Baking Sheet Pans',
+        link: 'https://amzn.to/2FjrQVW',
+      },
+    ],
+  },
+];
