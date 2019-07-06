@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+
 const testData = [
   {
     textContent: [
@@ -9,6 +11,22 @@ const testData = [
       'https://www.youtube.com/channel/UCYJdpnjuSWVOLgGT9fIzL0g',
       'https://amzn.to/2FjrQVW',
       'https://amzn.to/2Dzli3F',
+    ],
+  },
+];
+
+const formattedSickPicks = [
+  {
+    show: '1',
+    data: [
+      {
+        text: 'Scott:  Jelle’s Marble Runs',
+        link: 'https://www.youtube.com/channel/UCYJdpnjuSWVOLgGT9fIzL0g',
+      },
+      {
+        text: 'Wes 1:  Good Quality Baking Sheet Pans',
+        link: 'https://amzn.to/2FjrQVW',
+      },
     ],
   },
 ];
