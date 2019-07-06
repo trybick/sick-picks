@@ -1,4 +1,5 @@
 const puppeteer = require('puppeteer');
+const fs = require('fs');
 
 const baseUrl = 'https://syntax.fm';
 
@@ -14,7 +15,7 @@ async function scrapeSickPicks() {
   const numberOfShows = (await page.$$('.show')).length;
   const scrapedData = [];
 
-  for (let n = 1; n < 8; n++) {
+  for (let n = 1; n < 5; n++) {
     // Click next show
     await Promise.all([
       page.click(`#main > div.showList > div:nth-child(${n})`),
@@ -25,7 +26,7 @@ async function scrapeSickPicks() {
       () => document.querySelector('#main > div.showNotes > h2').textContent,
     );
     if (showTitle.includes('Hasty Treat')) {
-      continue; 
+      continue;
     }
     // Copy text
     const textContent = await page.evaluate(() => {
@@ -42,6 +43,30 @@ async function scrapeSickPicks() {
     scrapedData.push({ showTitle, textContent, hyperlinks });
   }
   console.log('data', scrapedData);
+
+  // fs.readFile('data/data.json', 'utf8', (err, data) => {
+  //   if (err) {
+  //     console.log(err);
+  //   } else {
+  //     const file = JSON.parse(scrapedData);
+  //     file.data.push({
+  //       // show: showTitle,
+  //       // text: textContent,
+  //       // link: hyperlinks,
+  //       test: '2',
+  //     });
+
+  //     const json = JSON.stringify(file);
+
+  //     fs.writeFile('saved/data.json', json, 'utf8', err => {
+  //       if (err) {
+  //         console.log(err);
+  //       } else {
+  //         // Everything went OK!
+  //       }
+  //     });
+  //   }
+  // });
 
   browser.close();
 }
