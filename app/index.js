@@ -12,24 +12,24 @@ async function scrapeSickPicks() {
   await page.goto(baseUrl, { waitUntil: 'networkidle0' });
 
   const numberOfShows = (await page.$$('.show')).length;
-
   const scrapedData = [];
+
   for (let n = 1; n < numberOfShows; n++) {
-    const textList = await page.evaluate(() => {
-      const items = [...document.querySelectorAll('#-siiiiick-piiiicks- + ul li')];
-      return items.map(i => i.textContent);
-    });
-    const hrefList = await page.evaluate(() => {
-      const links = [...document.querySelectorAll('#-siiiiick-piiiicks- + ul li a')];
-      return links.map(a => a.href);
-    });
-    scrapedData.push(textList, hrefList);
     await Promise.all([
       page.click(`#main > div.showList > div:nth-child(${n})`),
       page.waitForNavigation({ waitUntil: 'networkidle2' }),
     ]);
+    const textContent = await page.evaluate(() => {
+      const items = [...document.querySelectorAll('#-siiiiick-piiiicks- + ul li')];
+      return items.map(i => i.textContent);
+    });
+    const hyperlinks = await page.evaluate(() => {
+      const links = [...document.querySelectorAll('#-siiiiick-piiiicks- + ul li a')];
+      return links.map(a => a.href);
+    });
+    scrapedData.push({ textContent, hyperlinks });
   }
-  console.log('test', scrapedData);
+  console.log('data', scrapedData);
 
   browser.close();
 }
