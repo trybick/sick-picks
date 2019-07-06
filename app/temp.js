@@ -30,3 +30,7 @@ const formattedSickPicks = [
     ],
   },
 ];
+
+for (let i in firstObject) {
+  formatted[i].data = original[i].textContent;
+}
