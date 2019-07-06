@@ -3,7 +3,11 @@ const puppeteer = require('puppeteer');
 const baseUrl = 'https://syntax.fm';
 
 async function scrapeSickPicks() {
-  const browser = await puppeteer.launch({ headless: false, defaultViewport: null, devtools: false });
+  const browser = await puppeteer.launch({
+    headless: false,
+    defaultViewport: null,
+    devtools: false,
+  });
   const page = await browser.newPage();
   await page.goto(baseUrl, { waitUntil: 'networkidle0' });
 
@@ -26,7 +30,6 @@ async function scrapeSickPicks() {
     ]);
   }
   console.log('test', scrapedData);
-
 
   browser.close();
 }
