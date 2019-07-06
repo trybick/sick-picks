@@ -7,10 +7,7 @@ async function scrapeSickPicks() {
   const page = await browser.newPage();
   await page.goto(baseUrl, { waitUntil: 'networkidle0' });
 
-  // Begin
-  // const title = await page.evaluate(() => document.querySelectorAll('#-siiiiick-piiiicks- + ul li').textContent);
-  // console.log('title', title);
-
+  // Get text and urls from first episode
   const textList = await page.evaluate(() => {
     const items = [...document.querySelectorAll('#-siiiiick-piiiicks- + ul li')];
     return items.map(i => i.textContent);
@@ -22,6 +19,16 @@ async function scrapeSickPicks() {
     return links.map(a => a.href);
   });
   console.log('hrefs:', hrefList);
+
+  // Navigate to next episode
+  
+  const shows = await page.evaluate(() => {
+    const list = [];
+    const elements = document.getElementsByClassName('show');
+    for (const el of elements) { list.push(el.textContent); }
+    return list;
+  });
+  console.log('shows', shows);
 
 
   browser.close();
