@@ -50,3 +50,28 @@ const newArray = [
     ],
   },
 ];
+
+
+fs.readFile('data/data.json', 'utf8', (err, data) => {
+  if (err) {
+    console.log(err);
+  } else {
+    const file = JSON.parse(scrapedData);
+    file.data.push({
+      // show: showTitle,
+      // text: textContent,
+      // link: hyperlinks,
+      test: '2',
+    });
+
+    const json = JSON.stringify(file);
+
+    fs.writeFile('saved/data.json', json, 'utf8', err => {
+      if (err) {
+        console.log(err);
+      } else {
+        // Everything went OK!
+      }
+    });
+  }
+});

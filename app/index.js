@@ -40,50 +40,21 @@ async function scrapeSickPicks() {
     });
     // Move to formatted array
     const formatted = [];
-    for (let text of textContent) {
-      for (let link of hyperlinks) {
-        formatted.push({
-          data: [
-            {
-              iteration: n,
-              textContent: text,
-              hyperlink: link,
-            },
-          ],
-        });
-      }
+    for (let i = 0; i < textContent.length; i++) {
+      formatted.push({
+        data: [
+          {
+            iteration: n,
+            textContent: textContent[i],
+            hyperlink: hyperlinks[i],
+          },
+        ],
+      });
     }
-
-  
-    // scrapedData.push({ showTitle, textContent, hyperlinks });
     scrapedData.push(formatted);
   }
 
   console.log('data', JSON.stringify(scrapedData, null, 4));
-
-  // fs.readFile('data/data.json', 'utf8', (err, data) => {
-  //   if (err) {
-  //     console.log(err);
-  //   } else {
-  //     const file = JSON.parse(scrapedData);
-  //     file.data.push({
-  //       // show: showTitle,
-  //       // text: textContent,
-  //       // link: hyperlinks,
-  //       test: '2',
-  //     });
-
-  //     const json = JSON.stringify(file);
-
-  //     fs.writeFile('saved/data.json', json, 'utf8', err => {
-  //       if (err) {
-  //         console.log(err);
-  //       } else {
-  //         // Everything went OK!
-  //       }
-  //     });
-  //   }
-  // });
 
   browser.close();
 }
