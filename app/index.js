@@ -15,7 +15,7 @@ async function scrapeSickPicks() {
   const numberOfShows = (await page.$$('.show')).length;
   const scrapedData = [];
 
-  for (let n = 1; n < 5; n++) {
+  for (let n = 1; n < 6; n++) {
     // Click next show
     await Promise.all([
       page.click(`#main > div.showList > div:nth-child(${n})`),
@@ -38,11 +38,28 @@ async function scrapeSickPicks() {
       const links = [...document.querySelectorAll('#-siiiiick-piiiicks- + ul li a')];
       return links.map(a => a.href);
     });
+    // Move to formatted array
+    const formatted = [];
+    for (let text of textContent) {
+      for (let link of hyperlinks) {
+        formatted.push({
+          data: [
+            {
+              iteration: n,
+              textContent: text,
+              hyperlink: link,
+            },
+          ],
+        });
+      }
+    }
 
-    // Push data
-    scrapedData.push({ showTitle, textContent, hyperlinks });
+  
+    // scrapedData.push({ showTitle, textContent, hyperlinks });
+    scrapedData.push(formatted);
   }
-  console.log('data', scrapedData);
+
+  console.log('data', JSON.stringify(scrapedData, null, 4));
 
   // fs.readFile('data/data.json', 'utf8', (err, data) => {
   //   if (err) {
