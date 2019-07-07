@@ -1,3 +1,4 @@
+/* eslint-disable no-shadow */
 const puppeteer = require('puppeteer');
 const fs = require('fs');
 
@@ -15,25 +16,27 @@ async function scrapeSickPicks() {
   const numberOfShows = (await page.$$('.show')).length;
   const scrapedData = [];
 
-  for (let n = 1; n < 6; n++) {
-    // Click next show
-    await Promise.all([
-      page.click(`#main > div.showList > div:nth-child(${n})`),
-      page.waitForNavigation({ waitUntil: 'networkidle2' }),
-    ]);
-    // Don't include Hasty Treats
+  for (let n = 1; n < 8; n++) {
+    // Skip 'Hasty Treats'
+    const nextShow = `#main > div.showList > div:nth-child(${n}) > a > h3`;
     const showTitle = await page.evaluate(
-      () => document.querySelector('#main > div.showNotes > h2').textContent,
+      (n, nextShow) => document.querySelector(nextShow).textContent,
+      n,
+      nextShow,
     );
     if (showTitle.includes('Hasty Treat')) {
       continue;
     }
-    // Copy text
+    // Click next episode
+    await Promise.all([
+      page.click(nextShow),
+      page.waitForNavigation({ waitUntil: 'networkidle2' }),
+    ]);
+    // Get text content and links
     const textContent = await page.evaluate(() => {
       const items = [...document.querySelectorAll('#-siiiiick-piiiicks- + ul li')];
       return items.map(i => i.textContent);
     });
-    // Copy embedded links
     const hyperlinks = await page.evaluate(() => {
       const links = [...document.querySelectorAll('#-siiiiick-piiiicks- + ul li a')];
       return links.map(a => a.href);
