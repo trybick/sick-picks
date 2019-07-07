@@ -16,7 +16,7 @@ async function scrapeSickPicks() {
   const numberOfShows = (await page.$$('.show')).length;
   const scrapedData = [];
 
-  for (let n = 1; n < 8; n++) {
+  for (let n = 1; n < 4; n++) {
     // Skip 'Hasty Treats'
     const nextShow = `#main > div.showList > div:nth-child(${n}) > a > h3`;
     const showTitle = await page.evaluate(
@@ -32,6 +32,11 @@ async function scrapeSickPicks() {
       page.click(nextShow),
       page.waitForNavigation({ waitUntil: 'networkidle2' }),
     ]);
+    // Get episode number
+    const episode = await page.evaluate(
+      n => document.querySelector(`#main > div.showList > div:nth-child(${n}) > a > p`).textContent,
+      n,
+    );
     // Get text content and links
     const textContent = await page.evaluate(() => {
       const items = [...document.querySelectorAll('#-siiiiick-piiiicks- + ul li')];
@@ -45,9 +50,10 @@ async function scrapeSickPicks() {
     const formatted = [];
     for (let i = 0; i < textContent.length; i++) {
       formatted.push({
-        data: [
+        [episode]: [
           {
             iteration: n,
+            episode,
             textContent: textContent[i],
             hyperlink: hyperlinks[i],
           },
@@ -57,7 +63,7 @@ async function scrapeSickPicks() {
     scrapedData.push(formatted);
   }
 
-  console.log('data', JSON.stringify(scrapedData, null, 4));
+  console.log('data', JSON.stringify(scrapedData, null, 2));
 
   browser.close();
 }
