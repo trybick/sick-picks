@@ -1,4 +1,3 @@
-/* eslint-disable no-shadow */
 const puppeteer = require('puppeteer');
 const fs = require('fs');
 
@@ -16,7 +15,7 @@ async function scrapeSickPicks() {
   const numberOfShows = (await page.$$('.show')).length;
   const scrapedData = [];
 
-  for (let n = 1; n < 4; n++) {
+  for (let n = 1; n < numberOfShows; n++) {
     // Skip 'Hasty Treats'
     const nextShow = `#main > div.showList > div:nth-child(${n}) > a > h3`;
     const showTitle = await page.evaluate(
@@ -47,23 +46,43 @@ async function scrapeSickPicks() {
       return links.map(a => a.href);
     });
     // Move to formatted array
-    const formatted = [];
+    const formatted = {};
     for (let i = 0; i < textContent.length; i++) {
-      formatted.push({
-        [episode]: [
+      if (formatted.hasOwnProperty(episode)) {
+        formatted[episode].push({
+          iteration: n,
+          episode,
+          textContent: textContent[i],
+          hyperlink: hyperlinks[i],
+        });
+      } else {
+        formatted[episode] = [
           {
             iteration: n,
             episode,
             textContent: textContent[i],
             hyperlink: hyperlinks[i],
           },
-        ],
-      });
+        ];
+      }
+
+
+      // formatted.push({
+      //   [episode]: [
+      //     {
+      //       iteration: n,
+      //       episode,
+      //       textContent: textContent[i],
+      //       hyperlink: hyperlinks[i],
+      //     },
+      //   ],
+      // });
     }
+
     scrapedData.push(formatted);
   }
 
-  console.log('data', JSON.stringify(scrapedData, null, 2));
+  console.log('Finished data: ', JSON.stringify(scrapedData, null, 2));
 
   browser.close();
 }
