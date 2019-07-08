@@ -37,14 +37,19 @@ async function scrapeSickPicks() {
       n,
     );
     // Get text content and links
-    const textContent = await page.evaluate(() => {
-      const items = [...document.querySelectorAll('#-siiiiick-piiiicks- + ul li')];
+    let sickPicksSelector = '#-siiiiick-piiiicks- + ul li';
+    if (n < 44) {
+      sickPicksSelector = '#sick-picks + ul li'
+    }
+
+    const textContent = await page.evaluate((sickPicksSelector) => {
+      const items = [...document.querySelectorAll(sickPicksSelector)];
       return items.map(i => i.textContent);
-    });
-    const hyperlinks = await page.evaluate(() => {
-      const links = [...document.querySelectorAll('#-siiiiick-piiiicks- + ul li a')];
+    }, sickPicksSelector);
+    const hyperlinks = await page.evaluate((sickPicksSelector) => {
+      const links = [...document.querySelectorAll(`${sickPicksSelector} a`)];
       return links.map(a => a.href);
-    });
+    }, sickPicksSelector);
     // Move to formatted array
     const formatted = {};
     for (let i = 0; i < textContent.length; i++) {
