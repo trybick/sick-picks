@@ -12,7 +12,9 @@ async function scrapeSickPicks() {
   const page = await browser.newPage();
   await page.goto(baseUrl, { waitUntil: 'networkidle0' });
 
-  const numberOfShows = (await page.$$('.show')).length;
+  // Remove 1 for preview show
+  const numberOfShows = (await page.$$('.show')).length - 1;
+  console.log('numberOfShows:', numberOfShows)
   const scrapedData = [];
 
   for (let n = 1; n < numberOfShows; n++) {
@@ -38,14 +40,17 @@ async function scrapeSickPicks() {
     );
     // Get text content and links
     let sickPicksSelector = '#-siiiiick-piiiicks- + ul li';
-    if (n < 44) {
+    if (n >= 118) {
       sickPicksSelector = '#sick-picks + ul li'
     }
+    console.log('iteration + sickPicksSelector', n, sickPicksSelector)
 
     const textContents = await page.evaluate((sickPicksSelector) => {
       const items = [...document.querySelectorAll(sickPicksSelector)];
       return items.map(i => i.textContent);
     }, sickPicksSelector);
+    console.log('textContents:', textContents)
+
     const hyperlinks = await page.evaluate((sickPicksSelector) => {
       const links = [...document.querySelectorAll(`${sickPicksSelector} a`)];
       return links.map(a => a.href);
