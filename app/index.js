@@ -29,10 +29,10 @@ async function scrapeSickPicks() {
     // Click next episode
     await Promise.all([
       page.click(nextShow),
-      page.waitForNavigation({ waitUntil: 'networkidle2' }),
+      page.waitForNavigation({ waitUntil: 'networkidle0' }),
     ]);
     // Get episode number
-    const episode = await page.evaluate(
+    const episodeNum = await page.evaluate(
       n => document.querySelector(`#main > div.showList > div:nth-child(${n}) > a > p`).textContent,
       n,
     );
@@ -42,7 +42,7 @@ async function scrapeSickPicks() {
       sickPicksSelector = '#sick-picks + ul li'
     }
 
-    const textContent = await page.evaluate((sickPicksSelector) => {
+    const textContents = await page.evaluate((sickPicksSelector) => {
       const items = [...document.querySelectorAll(sickPicksSelector)];
       return items.map(i => i.textContent);
     }, sickPicksSelector);
@@ -51,43 +51,31 @@ async function scrapeSickPicks() {
       return links.map(a => a.href);
     }, sickPicksSelector);
     // Move to formatted array
-    const formatted = {};
-    for (let i = 0; i < textContent.length; i++) {
-      if (formatted.hasOwnProperty(episode)) {
-        formatted[episode].push({
+    const formattedData = {};
+    for (let i = 0; i < textContents.length; i++) {
+      if (formattedData.hasOwnProperty(episodeNum)) {
+        formattedData[episodeNum].push({
           iteration: n,
-          episode,
-          textContent: textContent[i],
+          episodeNum,
+          textContent: textContents[i],
           hyperlink: hyperlinks[i],
         });
       } else {
-        formatted[episode] = [
+        formattedData[episodeNum] = [
           {
             iteration: n,
-            episode,
-            textContent: textContent[i],
+            episodeNum,
+            textContent: textContents[i],
             hyperlink: hyperlinks[i],
           },
         ];
       }
-
-
-      // formatted.push({
-      //   [episode]: [
-      //     {
-      //       iteration: n,
-      //       episode,
-      //       textContent: textContent[i],
-      //       hyperlink: hyperlinks[i],
-      //     },
-      //   ],
-      // });
     }
 
-    scrapedData.push(formatted);
+    scrapedData.push(formattedData);
   }
 
-  console.log('Finished data: ', JSON.stringify(scrapedData, null, 2));
+  console.log('Final data: ', JSON.stringify(scrapedData, null, 2));
 
   browser.close();
 }
