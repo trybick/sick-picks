@@ -61,7 +61,6 @@ async function scrapeSickPicks() {
       if (formattedData.hasOwnProperty(episodeNum)) {
         formattedData[episodeNum].push({
           iteration: n,
-          episodeNum,
           textContent: textContents[i],
           hyperlink: hyperlinks[i],
         });
@@ -69,7 +68,6 @@ async function scrapeSickPicks() {
         formattedData[episodeNum] = [
           {
             iteration: n,
-            episodeNum,
             textContent: textContents[i],
             hyperlink: hyperlinks[i],
           },
@@ -80,7 +78,7 @@ async function scrapeSickPicks() {
     scrapedData.push(formattedData);
   }
 
-  console.log('Final data: ', JSON.stringify(scrapedData, null, 2));
+  console.log('Scraped data: ', JSON.stringify(scrapedData, null, 2));
 
   browser.close();
 }
