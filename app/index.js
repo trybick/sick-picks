@@ -12,12 +12,11 @@ async function scrapeSickPicks() {
   const page = await browser.newPage();
   await page.goto(baseUrl, { waitUntil: 'networkidle0' });
 
-  // Remove 1 for preview show
-  const numberOfShows = (await page.$$('.show')).length - 1;
+  const numberOfShows = (await page.$$('.show')).length;
   console.log('numberOfShows:', numberOfShows)
   const scrapedData = [];
 
-  for (let n = 1; n < numberOfShows; n++) {
+  for (let n = 1; n <= numberOfShows; n++) {
     // Skip 'Hasty Treats'
     const nextShow = `#main > div.showList > div:nth-child(${n}) > a > h3`;
     const showTitle = await page.evaluate(
@@ -55,7 +54,8 @@ async function scrapeSickPicks() {
       const links = [...document.querySelectorAll(`${sickPicksSelector} a`)];
       return links.map(a => a.href);
     }, sickPicksSelector);
-    // Move to formatted array
+
+    // Move data to object
     const formattedData = {};
     for (let i = 0; i < textContents.length; i++) {
       if (formattedData.hasOwnProperty(episodeNum)) {
