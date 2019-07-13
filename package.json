@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "log": "node app/index.js"
+  },
   "author": "",
   "license": "ISC",
   "dependencies": {

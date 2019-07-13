@@ -2,7 +2,7 @@ const puppeteer = require('puppeteer');
 const fs = require('fs');
 
 const baseUrl = 'https://syntax.fm';
-const finalData = []
+const finalData = [];
 
 async function scrapeSickPicks() {
   const browser = await puppeteer.launch({
@@ -14,9 +14,9 @@ async function scrapeSickPicks() {
   await page.goto(baseUrl, { waitUntil: 'networkidle0' });
 
   const numberOfShows = (await page.$$('.show')).length;
-  console.log('numberOfShows:', numberOfShows)
+  // console.log('numberOfShows:', numberOfShows);
 
-  for (let n = 1; n <= numberOfShows; n++) {
+  for (let n = 1; n < numberOfShows; n++) {
     const nextShow = `#main > div.showList > div:nth-child(${n}) > a > h3`;
     const showTitle = await page.evaluate(
       (n, nextShow) => document.querySelector(nextShow).textContent,
@@ -36,28 +36,23 @@ async function scrapeSickPicks() {
       n => document.querySelector(`#main > div.showList > div:nth-child(${n}) > a > p`).textContent,
       n,
     );
-    // Get text and links
-    // let sickPicksSelector = '#-siiiiick-piiiicks- + ul li';
-    // if (n >= 118) {
-    //   sickPicksSelector = '#sick-picks + ul li'
-    // }
-    // console.log('iteration + sickPicksSelector', n, sickPicksSelector)
+    console.log('episodeNum:', episodeNum)
 
     let sickPicksSelector = '#-siiiiick-piiiicks- + ul li';
-    if (await page.$(sickPicksSelector) === null) {
-      sickPicksSelector = '#sick-picks + ul li'
+    if ((await page.$(sickPicksSelector)) === null) {
+      sickPicksSelector = '#sick-picks + ul li';
+    } else if ((await page.$(sickPicksSelector)) === null) {
+      sickPicksSelector = '#siiiiiiiick-pixxxx';
     }
+    console.log(n, 'selector:', sickPicksSelector);
 
-    console.log('sickPicksSelector:', sickPicksSelector)
-    // console.log('sickPickSelector222: ', JSON.stringify(sickPicksSelector, null, 2));
-
-    const textContents = await page.evaluate((sickPicksSelector) => {
+    const textContents = await page.evaluate(sickPicksSelector => {
       const items = [...document.querySelectorAll(sickPicksSelector)];
       return items.map(i => i.textContent);
     }, sickPicksSelector);
-    console.log('textContents:', textContents)
+    console.log(n, 'textContents:', textContents);
 
-    const hyperlinks = await page.evaluate((sickPicksSelector) => {
+    const hyperlinks = await page.evaluate(sickPicksSelector => {
       const links = [...document.querySelectorAll(`${sickPicksSelector} a`)];
       return links.map(a => a.href);
     }, sickPicksSelector);
