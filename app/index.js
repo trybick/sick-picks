@@ -2,7 +2,6 @@ const puppeteer = require('puppeteer');
 const fs = require('fs');
 
 const baseUrl = 'https://syntax.fm';
-const finalData = [];
 
 async function scrapeSickPicks() {
   const browser = await puppeteer.launch({
@@ -13,6 +12,7 @@ async function scrapeSickPicks() {
   const page = await browser.newPage();
   await page.goto(baseUrl, { waitUntil: 'networkidle0' });
 
+  const finalData = [];
   const numberOfShows = (await page.$$('.show')).length;
   // console.log('numberOfShows:', numberOfShows);
 
@@ -36,7 +36,7 @@ async function scrapeSickPicks() {
       n => document.querySelector(`#main > div.showList > div:nth-child(${n}) > a > p`).textContent,
       n,
     );
-    console.log('episodeNum:', episodeNum)
+    // console.log('episodeNum:', episodeNum)
 
     let sickPicksSelector = '#-siiiiick-piiiicks- + ul li';
     if ((await page.$(sickPicksSelector)) === null) {
@@ -44,13 +44,13 @@ async function scrapeSickPicks() {
     } else if ((await page.$(sickPicksSelector)) === null) {
       sickPicksSelector = '#siiiiiiiick-pixxxx';
     }
-    console.log(n, 'selector:', sickPicksSelector);
+    // console.log(n, 'selector:', sickPicksSelector);
 
     const textContents = await page.evaluate(sickPicksSelector => {
       const items = [...document.querySelectorAll(sickPicksSelector)];
       return items.map(i => i.textContent);
     }, sickPicksSelector);
-    console.log(n, 'textContents:', textContents);
+    // console.log(n, 'textContents:', textContents);
 
     const hyperlinks = await page.evaluate(sickPicksSelector => {
       const links = [...document.querySelectorAll(`${sickPicksSelector} a`)];
@@ -83,6 +83,8 @@ async function scrapeSickPicks() {
   console.log('Scraped data: ', JSON.stringify(finalData, null, 2));
 
   browser.close();
+  return finalData
 }
 
-scrapeSickPicks();
+const results = scrapeSickPicks();
+console.log('results:', results)
