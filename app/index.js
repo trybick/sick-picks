@@ -80,10 +80,7 @@ async function scrapeSickPicks() {
   }
 
   console.log('Scraped data: ', JSON.stringify(finalData, null, 2));
-
   browser.close();
-  return finalData
 }
 
-const results = scrapeSickPicks();
-console.log('results:', results)
+scrapeSickPicks()
