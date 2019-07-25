@@ -12,9 +12,9 @@ async function scrapeSickPicks() {
   await page.goto(baseUrl, { waitUntil: 'networkidle2' });
 
   const finalData = [];
-  const numberOfShows = (await page.$$('.show')).length;
+  const numOfShows = (await page.$$('.show')).length;
 
-  for (let n = 1; n < 5; n++) {
+  for (let n = 1; n < numOfShows; n++) {
     const nextShow = `#main > div.showList > div:nth-child(${n}) > a > h3`;
     const showTitle = await page.evaluate(
       (n, nextShow) => document.querySelector(nextShow).textContent,
@@ -56,6 +56,8 @@ async function scrapeSickPicks() {
       return links.map(a => a.href);
     }, sickPicksSelector);
 
+    const date = await page.evaluate(() => document.querySelector('.show__date').textContent);
+
     // Move data to object
     const formattedData = {};
     for (let i = 0; i < textContents.length; i++) {
@@ -67,6 +69,7 @@ async function scrapeSickPicks() {
           link: links[i],
           owner,
           text,
+          date,
         });
       } else {
         const owner = textContents[i].split(':')[0];
@@ -77,6 +80,7 @@ async function scrapeSickPicks() {
             link: links[i],
             owner,
             text,
+            date,
           },
         ];
       }
