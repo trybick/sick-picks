@@ -51,7 +51,7 @@ async function scrapeSickPicks() {
       return items.map(i => i.textContent);
     }, sickPicksSelector);
 
-    const hyperlinks = await page.evaluate(sickPicksSelector => {
+    const links = await page.evaluate(sickPicksSelector => {
       const links = [...document.querySelectorAll(`${sickPicksSelector} a`)];
       return links.map(a => a.href);
     }, sickPicksSelector);
@@ -60,21 +60,23 @@ async function scrapeSickPicks() {
     const formattedData = {};
     for (let i = 0; i < textContents.length; i++) {
       if (formattedData.hasOwnProperty(episodeNum)) {
-        const itemOwner = textContents[i].split(':')[0];
+        const owner = textContents[i].split(':')[0];
+        const text = textContents[i].split(':')[1].substr(2);
         formattedData[episodeNum].push({
           iteration: n,
-          textContent: textContents[i],
-          owner: itemOwner,
-          hyperlink: hyperlinks[i],
+          link: links[i],
+          owner,
+          text,
         });
       } else {
-        const itemOwner = textContents[i].split(':')[0];
+        const owner = textContents[i].split(':')[0];
+        const text = textContents[i].split(':')[1].substr(2);
         formattedData[episodeNum] = [
           {
             iteration: n,
-            textContent: textContents[i],
-            owner: itemOwner,
-            hyperlink: hyperlinks[i],
+            link: links[i],
+            owner,
+            text,
           },
         ];
       }
