@@ -1,3 +1,4 @@
+/* eslint-disable prefer-destructuring */
 const puppeteer = require('puppeteer');
 
 const baseUrl = 'https://syntax.fm';
@@ -62,8 +63,13 @@ async function scrapeSickPicks() {
     const formattedData = {};
     for (let i = 0; i < textContents.length; i++) {
       if (formattedData.hasOwnProperty(episodeNum)) {
-        const owner = textContents[i].split(':')[0];
-        const text = textContents[i].split(':')[1].substr(2);
+        let owner = '';
+        let text = textContents[i];
+        if (textContents[i].includes(':')) {
+          owner = textContents[i].split(':')[0];
+          text = textContents[i].split(':')[1].substr(2);
+        }
+
         formattedData[episodeNum].push({
           iteration: n,
           link: links[i],
@@ -72,8 +78,13 @@ async function scrapeSickPicks() {
           date,
         });
       } else {
-        const owner = textContents[i].split(':')[0];
-        const text = textContents[i].split(':')[1].substr(2);
+        let owner = '';
+        let text = textContents[i];
+        if (textContents[i].includes(':')) {
+          owner = textContents[i].split(':')[0];
+          text = textContents[i].split(':')[1].substr(2);
+        }
+
         formattedData[episodeNum] = [
           {
             iteration: n,
