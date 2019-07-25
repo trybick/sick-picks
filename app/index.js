@@ -47,7 +47,7 @@ async function scrapeSickPicks() {
     }
 
     // Scrape text and links
-    const textContents = await page.evaluate(sickPicksSelector => {
+    const textItems = await page.evaluate(sickPicksSelector => {
       const items = [...document.querySelectorAll(sickPicksSelector)];
       return items.map(i => i.textContent);
     }, sickPicksSelector);
@@ -60,17 +60,18 @@ async function scrapeSickPicks() {
     const date = await page.evaluate(() => document.querySelector('.show__date').textContent);
 
     // Move data to object
-    const formattedData = {};
-    for (let i = 0; i < textContents.length; i++) {
-      if (formattedData.hasOwnProperty(episodeNum)) {
+    const sickPicksData = {};
+    for (let i = 0; i < textItems.length; i++) {
+      if (sickPicksData.hasOwnProperty(episodeNum)) {
         let owner = '';
-        let text = textContents[i];
-        if (textContents[i].includes(':')) {
-          owner = textContents[i].split(':')[0];
-          text = textContents[i].split(':')[1].substr(2);
+        let text = textItems[i];
+        // Most items have a ":" separating owner (Scott/Wes) from item text
+        if (text.includes(':')) {
+          owner = text.split(':')[0];
+          text = text.split(':')[1].substr(2);
         }
 
-        formattedData[episodeNum].push({
+        sickPicksData[episodeNum].push({
           iteration: n,
           link: links[i],
           owner,
@@ -79,13 +80,13 @@ async function scrapeSickPicks() {
         });
       } else {
         let owner = '';
-        let text = textContents[i];
-        if (textContents[i].includes(':')) {
-          owner = textContents[i].split(':')[0];
-          text = textContents[i].split(':')[1].substr(2);
+        let text = textItems[i];
+        if (text.includes(':')) {
+          owner = text.split(':')[0];
+          text = text.split(':')[1].substr(2);
         }
 
-        formattedData[episodeNum] = [
+        sickPicksData[episodeNum] = [
           {
             iteration: n,
             link: links[i],
@@ -97,7 +98,7 @@ async function scrapeSickPicks() {
       }
     }
 
-    finalData.push(formattedData);
+    finalData.push(sickPicksData);
   }
 
   console.log('Scraped data: ', JSON.stringify(finalData, null, 2));
