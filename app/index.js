@@ -9,12 +9,12 @@ async function scrapeSickPicks() {
     devtools: false,
   });
   const page = await browser.newPage();
-  await page.goto(baseUrl, { waitUntil: 'networkidle0' });
+  await page.goto(baseUrl, { waitUntil: 'networkidle2' });
 
   const finalData = [];
   const numberOfShows = (await page.$$('.show')).length;
 
-  for (let n = 1; n < numberOfShows; n++) {
+  for (let n = 1; n < 5; n++) {
     const nextShow = `#main > div.showList > div:nth-child(${n}) > a > h3`;
     const showTitle = await page.evaluate(
       (n, nextShow) => document.querySelector(nextShow).textContent,
@@ -28,7 +28,7 @@ async function scrapeSickPicks() {
     // Click next episode
     await Promise.all([
       page.click(nextShow),
-      page.waitForNavigation({ waitUntil: 'networkidle0' }),
+      page.waitForNavigation({ waitUntil: 'networkidle2' }),
     ]);
 
     // Get episode number
@@ -60,16 +60,20 @@ async function scrapeSickPicks() {
     const formattedData = {};
     for (let i = 0; i < textContents.length; i++) {
       if (formattedData.hasOwnProperty(episodeNum)) {
+        const itemOwner = textContents[i].split(':')[0];
         formattedData[episodeNum].push({
           iteration: n,
           textContent: textContents[i],
+          owner: itemOwner,
           hyperlink: hyperlinks[i],
         });
       } else {
+        const itemOwner = textContents[i].split(':')[0];
         formattedData[episodeNum] = [
           {
             iteration: n,
             textContent: textContents[i],
+            owner: itemOwner,
             hyperlink: hyperlinks[i],
           },
         ];
