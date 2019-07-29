@@ -15,7 +15,7 @@ async function scrapeSickPicks() {
   const finalData = [];
   const numOfShows = (await page.$$('.show')).length;
 
-  for (let n = 1; n < numOfShows; n++) {
+  for (let n = 1; n < 5; n++) {
     const nextShow = `#main > div.showList > div:nth-child(${n}) > a > h3`;
     const showTitle = await page.evaluate(
       (n, nextShow) => document.querySelector(nextShow).textContent,
@@ -46,7 +46,7 @@ async function scrapeSickPicks() {
       sickPicksSelector = '#siiiiiiiick-pixxxx';
     }
 
-    // Scrape text and links
+    // Scrape the data
     const textItems = await page.evaluate(sickPicksSelector => {
       const items = [...document.querySelectorAll(sickPicksSelector)];
       return items.map(i => i.textContent);
@@ -105,4 +105,4 @@ async function scrapeSickPicks() {
   browser.close();
 }
 
-scrapeSickPicks()
+scrapeSickPicks();
