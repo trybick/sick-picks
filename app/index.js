@@ -1,5 +1,6 @@
 /* eslint-disable prefer-destructuring */
 const puppeteer = require('puppeteer');
+const fs = require('fs');
 
 const baseUrl = 'https://syntax.fm';
 
@@ -56,7 +57,6 @@ async function scrapeSickPicks() {
       return links.map(a => a.href);
     }, sickPicksSelector);
 
-
     const sickPicksData = {};
     for (let i = 0; i < textItems.length; i++) {
       if (sickPicksData.hasOwnProperty(epiNum)) {
@@ -98,10 +98,14 @@ async function scrapeSickPicks() {
     finalData.push(sickPicksData);
   }
 
-  // Save
+  const dataToSave = JSON.stringify(finalData, null, 2);
 
+  fs.writeFile('./savedData.json', dataToSave, err => {
+    if (err) throw err;
+    console.log('The file was saved.');
+  });
 
-  console.log('Scraped data: ', JSON.stringify(finalData, null, 2));
+  console.log('Scraped data: ', dataToSave);
   browser.close();
 }
 
