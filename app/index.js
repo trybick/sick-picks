@@ -26,19 +26,19 @@ async function scrapeSickPicks() {
       continue;
     }
 
-    // Click next episode
     await Promise.all([
       page.click(nextShow),
       page.waitForNavigation({ waitUntil: 'networkidle2' }),
     ]);
 
-    // Get episode number
-    const episodeNum = await page.evaluate(
+    const epiNum = await page.evaluate(
       n => document.querySelector(`#main > div.showList > div:nth-child(${n}) > a > p`).textContent,
       n,
     );
 
-    // Set correct selector
+    const date = await page.evaluate(() => document.querySelector('.show__date').textContent);
+
+    // Previous shows used different IDs
     let sickPicksSelector = '#-siiiiick-piiiicks- + ul li';
     if ((await page.$(sickPicksSelector)) === null) {
       sickPicksSelector = '#sick-picks + ul li';
@@ -46,7 +46,6 @@ async function scrapeSickPicks() {
       sickPicksSelector = '#siiiiiiiick-pixxxx';
     }
 
-    // Scrape the data
     const textItems = await page.evaluate(sickPicksSelector => {
       const items = [...document.querySelectorAll(sickPicksSelector)];
       return items.map(i => i.textContent);
@@ -57,12 +56,10 @@ async function scrapeSickPicks() {
       return links.map(a => a.href);
     }, sickPicksSelector);
 
-    const date = await page.evaluate(() => document.querySelector('.show__date').textContent);
 
-    // Move data to object
     const sickPicksData = {};
     for (let i = 0; i < textItems.length; i++) {
-      if (sickPicksData.hasOwnProperty(episodeNum)) {
+      if (sickPicksData.hasOwnProperty(epiNum)) {
         let owner = '';
         let text = textItems[i];
         // Most items have a ":" separating owner (Scott/Wes) from item text
@@ -71,7 +68,7 @@ async function scrapeSickPicks() {
           text = text.split(':')[1].substr(2);
         }
 
-        sickPicksData[episodeNum].push({
+        sickPicksData[epiNum].push({
           iteration: n,
           link: links[i],
           owner,
@@ -86,7 +83,7 @@ async function scrapeSickPicks() {
           text = text.split(':')[1].substr(2);
         }
 
-        sickPicksData[episodeNum] = [
+        sickPicksData[epiNum] = [
           {
             iteration: n,
             link: links[i],
@@ -100,6 +97,9 @@ async function scrapeSickPicks() {
 
     finalData.push(sickPicksData);
   }
+
+  // Save
+
 
   console.log('Scraped data: ', JSON.stringify(finalData, null, 2));
   browser.close();
