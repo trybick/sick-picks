@@ -16,7 +16,7 @@ async function scrapeSickPicks() {
   const finalData = [];
   const numOfShows = (await page.$$('.show')).length;
 
-  for (let n = 1; n < 5; n++) {
+  for (let n = 1; n < numOfShows; n++) {
     const nextShow = `#main > div.showList > div:nth-child(${n}) > a > h3`;
     const showTitle = await page.evaluate(
       (n, nextShow) => document.querySelector(nextShow).textContent,
@@ -99,8 +99,7 @@ async function scrapeSickPicks() {
   }
 
   const dataToSave = JSON.stringify(finalData, null, 2);
-
-  fs.writeFile('./savedData.json', dataToSave, err => {
+  fs.writeFile('./app/savedSickPicks.json', dataToSave, err => {
     if (err) throw err;
     console.log('The file was saved.');
   });
