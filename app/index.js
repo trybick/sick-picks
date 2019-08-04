@@ -47,7 +47,7 @@ async function scrapeSickPicks() {
 
     const date = await page.evaluate(() => document.querySelector('.show__date').textContent);
 
-    // Previous shows used different IDs
+    // Previous shows use different IDs
     let sickPicksSelector = '#-siiiiick-piiiicks- + ul li';
     if ((await page.$(sickPicksSelector)) === null) {
       sickPicksSelector = '#sick-picks + ul li';
@@ -65,9 +65,9 @@ async function scrapeSickPicks() {
       return links.map(a => a.href);
     }, sickPicksSelector);
 
-    const sickPicksData = {};
+    const allEpisodes = {};
     for (let i = 0; i < textItems.length; i++) {
-      if (sickPicksData.hasOwnProperty(epiNum)) {
+      if (allEpisodes.hasOwnProperty(epiNum)) {
         let owner = '';
         let text = textItems[i];
         // Most items have a ":" separating owner (Scott/Wes) from item text
@@ -76,7 +76,7 @@ async function scrapeSickPicks() {
           text = text.split(':')[1].trim();
         }
 
-        sickPicksData[epiNum].push({
+        allEpisodes[epiNum].push({
           iteration: n,
           link: links[i],
           owner,
@@ -91,7 +91,7 @@ async function scrapeSickPicks() {
           text = text.split(':')[1].trim();
         }
 
-        sickPicksData[epiNum] = [
+        allEpisodes[epiNum] = [
           {
             iteration: n,
             link: links[i],
@@ -103,7 +103,7 @@ async function scrapeSickPicks() {
       }
     }
 
-    finalData.push(sickPicksData);
+    finalData.push(allEpisodes);
   }
 
   const dataToSave = JSON.stringify(finalData, null, 2);
