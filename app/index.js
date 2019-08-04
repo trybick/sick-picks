@@ -65,7 +65,7 @@ async function scrapeSickPicks() {
         // Most items have a ":" separating owner (Scott/Wes) from item text
         if (text.includes(':')) {
           owner = text.split(':')[0];
-          text = text.split(':')[1].substr(2);
+          text = text.split(':')[1].trim();
         }
 
         sickPicksData[epiNum].push({
@@ -80,7 +80,7 @@ async function scrapeSickPicks() {
         let text = textItems[i];
         if (text.includes(':')) {
           owner = text.split(':')[0];
-          text = text.split(':')[1].substr(2);
+          text = text.split(':')[1].trim();
         }
 
         sickPicksData[epiNum] = [
