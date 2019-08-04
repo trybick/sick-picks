@@ -67,14 +67,20 @@ async function scrapeSickPicks() {
 
     const allEpisodes = {};
     for (let i = 0; i < textItems.length; i++) {
-      if (allEpisodes.hasOwnProperty(epiNum)) {
+      // Most items have a ":" separating owner (Scott/Wes) from item text
+      const splitOwnerFromText = requestedData => {
         let owner = '';
         let text = textItems[i];
-        // Most items have a ":" separating owner (Scott/Wes) from item text
         if (text.includes(':')) {
           owner = text.split(':')[0];
           text = text.split(':')[1].trim();
         }
+        return requestedData === 'owner' ? owner : text;
+      };
+
+      if (allEpisodes.hasOwnProperty(epiNum)) {
+        const owner = splitOwnerFromText('owner');
+        const text = splitOwnerFromText('text');
 
         allEpisodes[epiNum].push({
           iteration: n,
@@ -84,12 +90,8 @@ async function scrapeSickPicks() {
           date,
         });
       } else {
-        let owner = '';
-        let text = textItems[i];
-        if (text.includes(':')) {
-          owner = text.split(':')[0];
-          text = text.split(':')[1].trim();
-        }
+        const owner = splitOwnerFromText('owner');
+        const text = splitOwnerFromText('text');
 
         allEpisodes[epiNum] = [
           {
