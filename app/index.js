@@ -4,6 +4,14 @@ const fs = require('fs');
 
 const baseUrl = 'https://syntax.fm';
 
+const saveDataToFile = data => {
+  const path = './app/savedSickPicks.json';
+  fs.writeFile(path, data, err => {
+    if (err) throw err;
+    console.log('The file was saved successfully to:', path);
+  });
+};
+
 async function scrapeSickPicks() {
   const browser = await puppeteer.launch({
     headless: true,
@@ -99,12 +107,9 @@ async function scrapeSickPicks() {
   }
 
   const dataToSave = JSON.stringify(finalData, null, 2);
-  fs.writeFile('./app/savedSickPicks.json', dataToSave, err => {
-    if (err) throw err;
-    console.log('The file was saved.');
-  });
-
   console.log('Scraped data: ', dataToSave);
+  saveDataToFile(dataToSave);
+
   browser.close();
 }
 
