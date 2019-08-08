@@ -5,10 +5,10 @@ const fs = require('fs');
 const baseUrl = 'https://syntax.fm';
 
 const saveDataToFile = data => {
-  const path = './app/savedSickPicks.json';
+  const path = `./data/sick-picks-${new Date().toJSON()}.json`;
   fs.writeFile(path, data, err => {
     if (err) throw err;
-    console.log('The file was saved successfully to:', path);
+    console.log('The file was saved to:', path);
   });
 };
 

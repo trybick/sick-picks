@@ -7,7 +7,7 @@
     "scrape": "node app/index.js"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "puppeteer": "^1.18.1"
   },
