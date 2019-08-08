@@ -65,7 +65,7 @@ async function scrapeSickPicks() {
       return links.map(a => a.href);
     }, sickPicksSelector);
 
-    const allEpisodes = {};
+    const dataFromThisEpisode = {};
     for (let i = 0; i < textItems.length; i++) {
       // Most items have a ":" separating owner (Scott/Wes) from item text
       const splitOwnerFromText = requestedData => {
@@ -78,11 +78,10 @@ async function scrapeSickPicks() {
         return requestedData === 'owner' ? owner : text;
       };
 
-      if (allEpisodes.hasOwnProperty(epiNum)) {
+      if (dataFromThisEpisode.hasOwnProperty(epiNum)) {
         const owner = splitOwnerFromText('owner');
         const text = splitOwnerFromText('text');
-
-        allEpisodes[epiNum].push({
+        dataFromThisEpisode[epiNum].push({
           iteration: n,
           link: links[i],
           owner,
@@ -92,8 +91,7 @@ async function scrapeSickPicks() {
       } else {
         const owner = splitOwnerFromText('owner');
         const text = splitOwnerFromText('text');
-
-        allEpisodes[epiNum] = [
+        dataFromThisEpisode[epiNum] = [
           {
             iteration: n,
             link: links[i],
@@ -105,7 +103,7 @@ async function scrapeSickPicks() {
       }
     }
 
-    finalData.push(allEpisodes);
+    finalData.push(dataFromThisEpisode);
   }
 
   const dataToSave = JSON.stringify(finalData, null, 2);
