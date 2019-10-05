@@ -44,6 +44,7 @@ async function scrapeSickPicks() {
       n => document.querySelector(`#main > div.showList > div:nth-child(${n}) > a > p`).textContent,
       n,
     );
+    console.log('Scraping', epiNum)
 
     const date = await page.evaluate(() => document.querySelector('.show__date').textContent);
 
